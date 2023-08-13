@@ -1,0 +1,107 @@
+ <!-- Sidebar -->
+ <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url_for('p_dashboard') }}">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <!--<i class="fas fa-laugh-wink"></i>-->
+        </div>
+        <div class="sidebar-brand-text mx-3"> Decision Support Tool</div>
+    </a>
+
+    <!-- Divider -->
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item">
+        <span class="hovertext" data-hover="Shows the List of Investors, Investment, Hectares Reforested, Rainforestation Cost Breakdown, and Investors’ land cover in map">
+        <a class="nav-link" href="{{ url_for('p_dashboard') }}">
+            
+            <span>Investment Model</span></a>
+        </span>
+    </li>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+       
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+
+
+    <!-- Heading -->
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <span class="hovertext" data-hover="Displays the comparison of different Land Cover Scenario in 5, 10, 25, 50, 100 year Rainfall Return Period. Users may also view real-time water level and river discharge in downstream and upstream hydrological sensors ">
+        <a class="nav-link" href="{{ url_for('p_landcover') }}">  <span>Flood Model</span></a>
+        </span>
+        <!--<a class="nav-link" href="{{ url_for('rainscenario') }}">  <span>Rainfall Scenario</span></a>-->
+    </li>
+
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <span class="hovertext" data-hover="Displays the influence of rainforestation to soil erosion in different land cover scenario in different rainfall return period.">
+        <a class="nav-link" href="{{ url_for('p_erosion') }}">
+            
+            <span>Erosion Model</span></a>
+            </span>
+    </li>
+
+    <hr class="sidebar-divider">
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <span class="hovertext" data-hover="Displays the comparison of different land cover scenario in different  rainfall return period in which characterized by low precipitation and decreased water availability.
+        ">
+        <a class="nav-link" href="{{ url_for('p_dry_season') }}">
+            
+            <span>Dry Season Flow Model</span></a>
+            
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+    
+    <li class="nav-item">
+        <span class="hovertext" data-hover="Guide to Manage DST">
+        <a class="nav-link" href="https://docs.google.com/document/d/1Gsc6DYwGHZ-XinlbK5N7Od2k55SjkD0CfMLydrsQS10/edit?usp=sharing" target="_blank" rel="noopener">
+            
+            <span>Manual</span></a>
+        <span></span>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link"  href="{{ url_for('p_about') }}">
+            
+            <span>About</span></a>
+            
+    </li>
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+<!--
+     Sidebar Message 
+    <div class="sidebar-card d-none d-lg-flex">
+        
+        <a class="btn btn-danger btn-sm" href="{{ url_for('logout') }}">Log Out</a>
+    </div>
+-->
+
+</ul>
+
+
+<!-- End of Sidebar -->
+
+

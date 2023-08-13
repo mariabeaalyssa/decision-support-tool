@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Decision Support Tool - Flood Model</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{{ url_for('.static', filename='vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{ url_for('.static', filename='css/sb-admin-2.min.css')}}" rel="stylesheet" type="text/css">
+
+    <link href="{{ url_for('.static', filename='vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+  
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+   
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+    />
+
+    <style>
+      
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 70%;
+        width: 100%;
+        overflow: hidden;
+      }
+    </style>
+      <style>
+        .hovertext {
+          position: relative;
+          border-bottom: 1px dotted black;
+        }
+
+        .hovertext:before {
+          content: attr(data-hover);
+          visibility: hidden;
+          opacity: 0;
+          width: 200px;
+          background-color: rgb(231, 229, 229);
+          color: rgb(37, 35, 35);
+          text-align: center;
+          border-radius: 5px;
+          padding: 10px 0;
+          transition: opacity 1s ease-in-out;
+
+          position: absolute;
+          z-index: 1;
+          left: 0;
+          top: 110%;
+        }
+
+        .hovertext:hover:before {
+          opacity: 1;
+          visibility: visible;
+        }
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+        }
+        
+        .switch input { 
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .2s;
+          transition: .2s;
+        }
+        
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .2s;
+          transition: .1s;
+        }
+        
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+        
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+        
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+        
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+        
+        .slider.round:before {
+          border-radius: 50%;
+        }
+        </style>
+        <script>
+        function toggle(ID){
+    var element = document.getElementById(ID);
+    if(element.style.display === "none"){
+        element.style.display = "block";
+    }else{
+        element.style.display = "none";
+    }
+}
+          </script>
+
+    <script src="https://js.arcgis.com/4.24/"></script>
+    
+
+    <script>
+      require([
+        "esri/config",
+        "esri/views/SceneView",
+        "esri/widgets/LayerList",
+        "esri/widgets/Legend",
+        "esri/WebMap"
+      ], (esriConfig,SceneView, LayerList, Legend, WebMap) => {
+        esriConfig.apiKey = "AAPKf793e8626e4745f3b6ac2d9ee72063badZRO5Xycxb9gPP3jy1gSsrb0y580fmNvR14G-1vePOaFVP9IxO93ALdFGi93bM1z";
+        const scene = new WebMap({
+          portalItem: {
+            // autocasts as new PortalItem()
+            id: "15089ddf10cc4a619b238b77228b1f5e"
+          }
+        });
+
+        const view = new SceneView({
+          container: "viewDiv",
+          map: scene
+        });
+
+        view.when(() => {
+        const layerList = new LayerList({
+          view: view
+        });
+
+        view.ui.add(layerList, "top-right");
+
+        const featureLayer = scene.layers.getItemAt(0);
+
+        const legend = new Legend({
+          view: view,
+          layerInfos: [
+            {
+              layer: featureLayer,
+             
+            }
+          ]
+        });
+
+        // Add widget to the bottom right corner of the view
+        view.ui.add(legend, "bottom-left");
+              
+      });
+      scene.startup();
+    });
+
+      
+    </script>
+    
+ 
+ 
+  </head>
+
+<body id="page-top">
+  <div id="wrapper">
+    {% include 'p_sidebar.html' %}
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+          <!-- Topbar -->
+          <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+            <h1 class="h3 mb-0 text-gray-800">Flood Model</h1>
+              <!-- Sidebar Toggle (Topbar) -->
+              <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                  <i class="fa fa-bars"></i>
+              </button>
+
+              <!-- Topbar Navbar -->
+
+              {% include 'p_topbar.html' %}
+
+          </nav>
+          <div class="container-fluid">
+
+          <div class="row">
+
+            
+            <div class="col-xl-3 col-md-6 mb-4">
+            <span class="hovertext" data-hover="Displays the comparison of different Land Cover Scenario in 5, 10, 25, 50, 100 year Rainfall Return Period">
+              <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                      <div class="row no-gutters align-items-center">
+                          <div class="col mr-2">
+                              <a class="text-xs font-weight-bold text-primary text-uppercase mb-1" href="{{ url_for('p_rainscenario') }}">
+                                  Rainfall and Land Cover Scenario</a>
+                                  
+                              <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                 
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+          </span>
+          </div>
+
+          <div class="col-xl-3 col-md-6 mb-4">
+          <span class="hovertext" data-hover="Click to view Real-time water level and river discharge ">
+              <span class="hovertext" data-hover="Click to view Real-time water level and river discharge "></span>
+              <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="card-body">
+                      <div class="row no-gutters align-items-center">
+                          <div class="col mr-2">
+                              <a class="text-xs font-weight-bold text-primary text-uppercase mb-1" href="{{ url_for('p_realtime') }}">
+                                  Real-time Water Level and River Discharge</a>
+                                  
+                              <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                 
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+          </span>
+          </div>
+          </div>
+          </div>
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary"></h6>
+            
+                   
+        </div>
+          
+          <div id="viewDiv"></div>
+          
+          <!--testing-->
+          <!--testing end-->
+        
+          <!-- Begin Page Content -->
+          <div class="card-body">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Flood Reduced</h6>
+
+             <span>
+              <span class="hovertext" data-hover="Flood Reduced in 1-10 year">
+              <h8 class="m-0 font-weight-bold text-primary">1-10 years</h8>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider round"
+                id="bt" 
+                onclick="toggle('table1')"></span>
+              </label>
+              
+              <span class="hovertext" data-hover="Flood Reduced in 11-20 year">
+              <h8 class="m-0 font-weight-bold text-primary">11-20 years</h8>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"
+                  id="bt" 
+                  onclick="toggle('table11')"></span>
+                </label>
+
+                
+                <span class="hovertext" data-hover="Flood Reduced in 21-30 year">
+                <h8 class="m-0 font-weight-bold text-primary">21-30 years</h8>             
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"
+                  id="bt" 
+                  onclick="toggle('table21')"></span>
+                </label>
+               </span>
+            
+            
+            </div>
+             <!----<span>
+                <label class="switch">
+                  <input type="checkbox"checked>
+                  <span class="slider round"
+                  id="bt" 
+                  onclick="toggle('divID')"></span>
+                </label> 30 years
+                </span>
+                --->
+            <div class="card-body">
+               
+            <div class="table-responsive">
+              <div style="border:solid 1px #ddd;  padding:1px;" id="table1" >
+                <center>
+                <iframe width="1500" height="410" seamless frameborder="0" scrolling="no" 
+               src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSKdW0YQHpks_Bg_mcih5AgmUbAgRYoC9GkpPx5VWh8QMvH5_-spoRk9s4kaezCiqSX195fkuaCtcK7/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+              </center>
+              </div>
+             <!--table 1
+                <table class="table table-bordered" width="100%" cellspacing="0" >
+                  <thead>
+                  <tr>
+                    
+                <span class="hovertext" data-hover="The amount of flood reduced from a reforested area in  year 1-10">
+                  <h6 class="m-0 font-weight-bold text-primary">Flood Reduced in 1-10 years</h6>
+                </span>
+
+                    <th><center>Land Cover Classification</center></th>
+                    <th><center>Hectares Reforested</center></th>
+                    <th><center>Cost</center></th>
+                    <th><center>Flood Reduced</center></th>
+                  </tr>
+              </thead> 
+
+              <tfoot>
+                  <th><center>Total:</center></th>
+                  <th>{{"{:,}".format(floodtemporal|sum (attribute='ft_hectares'))}} ha</th>
+                  <th>Php   </th>
+                  <th></th>
+                   
+                </tr>
+            </tfoot>
+
+              <tbody>
+                
+                {% for i in floodtemporal %}
+           
+                  <tr>
+                      <td><center><b>{{i.ft_lcc}}</b></center></td>
+                                    <td>{{"{:,}".format(i.ft_hectares)}} ha</td>
+                                    <td>Php {{"{:,.2f}".format(i.ft_hectares * (investmentcost.investmentcost_cost))}}</td>
+                                    <td>{{"{:,}".format(i.ft_reduced)}}</td>
+                                    
+
+                  </tr>
+              {% endfor %}
+              </tbody>
+              </table> 
+              --->
+              </div>
+
+              <!--11-20 years -->
+              <div style="border:solid 1px #ddd;  padding:1;  display:none;" id="table11" >
+                <center>
+                  <iframe width="1500" height="320" seamless frameborder="0" scrolling="no" 
+                 src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSKdW0YQHpks_Bg_mcih5AgmUbAgRYoC9GkpPx5VWh8QMvH5_-spoRk9s4kaezCiqSX195fkuaCtcK7/pubhtml?gid=1515745094&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+               </center>
+                <!--table 11
+                <table class="table table-bordered" width="100%" cellspacing="0" >
+                  <thead>
+                  <tr>
+                    
+                <span class="hovertext" data-hover="The amount of flood reduced from a reforested area in  year 1-10">
+                  <h6 class="m-0 font-weight-bold text-primary">Flood Reduced in 11-20 years</h6>
+                </span>
+
+                    <th><center>Land Cover Classification</center></th>
+                    <th><center>Hectares Reforested</center></th>
+                    <th><center>Cost</center></th>
+                    <th><center>Flood Reduced</center></th>
+                  </tr>
+              </thead> 
+              <tfoot>
+                <th><center>Total:</center></th>
+                <th>{{"{:,}".format(floodtemporal|sum (attribute='ft_hectares'))}}</th>
+                <th>{{"{:,}".format(floodtemporal|sum (attribute='ft_hectares'))}} has.</th>
+                <th></th>
+              
+          </tfoot>
+              <tbody>
+                
+             {% for i in floodtemporal %}
+             {% if i.ft_lcc != "Shrubs" %}
+                  <tr>
+                      <td><center><b>{{i.ft_lcc}}</b></center></td>
+                                    <td>{{"{:,}".format(i.ft_hectares)}} has.</td>
+                                    {% if rainforestation.rf_category != "Seedlings & Equipment" %}
+                                    
+                                    <td>{{"{:,}".format(i.ft_hectares * (rainforestation|sum (attribute='rf_total')))}}</td>
+                                    
+                                    {% endif %}
+                                    <td>{{"{:,}".format(i.ft_reduced)}}</td>
+                                    
+
+                  </tr>
+                {% endif %}
+              {% endfor %}
+              </tbody>
+              
+              </table> 
+              --->
+                </div>
+                <!--21-30 years-->
+                <div style="border:solid 1px #ddd;  padding:10px;  display:none;" id="table21" >
+                  <center>
+                     
+                    <iframe width="1500" height="250" seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSKdW0YQHpks_Bg_mcih5AgmUbAgRYoC9GkpPx5VWh8QMvH5_-spoRk9s4kaezCiqSX195fkuaCtcK7/pubhtml?gid=2060357384&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+                  </center>
+                  <!--table21--
+                  <table class="table table-bordered" width="100%" cellspacing="0" >
+                    <thead>
+                    <tr>
+                      
+                  <span class="hovertext" data-hover="The amount of flood reduced from a reforested area in  year 1-10">
+                    <h6 class="m-0 font-weight-bold text-primary">Flood Reduced in 21-30 years</h6>
+                  </span>
+  
+                      <th><center>Land Cover Classification</center></th>
+                      <th><center>Hectares Reforested</center></th>
+                      <th><center>Cost</center></th>
+                      <th><center>Flood Reduced</center></th>
+                    </tr>
+                </thead> 
+                <tfoot>
+                  <th><center>Total:</center></th>
+                  <th>{{"{:,}".format(floodtemporal|sum (attribute='ft_hectares'))}}</th>
+                  <th>{{"{:,}".format(floodtemporal|sum (attribute='ft_hectares'))}} has.</th>
+                  <th></th>
+                
+            </tfoot>
+                <tbody>
+                  
+               {% for i in floodtemporal %}
+               {% if i.ft_lcc == "Close Forest" %}
+                    <tr>
+                        <td><center><b>{{i.ft_lcc}}</b></center></td>
+                                      <td>{{"{:,}".format(i.ft_hectares)}} has.</td>
+                                      {% if rainforestation.rf_category != "Seedlings & Equipment", "Training & Technicaal Assistance", "Payments to Farmers"  %}
+                                      
+                                      <td>{{"{:,}".format(i.ft_hectares * (rainforestation|sum (attribute='rf_total')))}}</td>
+                                      
+                                      {% endif %}
+                                      <td>{{"{:,}".format(i.ft_reduced)}}</td>
+                                      
+  
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+                </tbody>
+                
+                </table> 
+              -->
+                  </div>
+                <!-- end of 21-30 years-->
+          </div>
+       
+          
+  <!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+</div>
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-left my-auto">
+            <b>REFERENCES</b>
+            <br>
+           <br> Map elements:
+           <br>· Sentinel-2, USGS
+           <br>· HEC-HMS, HEC-RAS, ESRI
+           
+            </div>
+        </div>
+    </footer>
+      <!-- End of Footer -->
+
+  </div>
+  <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+<script src="{{ url_for('.static', filename='main.js')}}"></script>
+<script src="{{ url_for('.static', filename='main.js')}}"></script>
+
+
+
+</html>
+

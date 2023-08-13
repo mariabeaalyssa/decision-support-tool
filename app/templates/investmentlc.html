@@ -1,0 +1,295 @@
+<!--Upload CSV
+
+    https://js-tutorials.com/demos/read_csv_javascript_demo/
+
+-->
+
+
+<!--Download CSV-->
+<style>
+  .hovertext {
+    position: relative;
+    border-bottom: 1px dotted black;
+  }
+
+  .hovertext:before {
+    content: attr(data-hover);
+    visibility: hidden;
+    opacity: 0;
+    width: 200px;
+    background-color: rgb(231, 229, 229);
+    color: rgb(37, 35, 35);
+    text-align: center;
+    border-radius: 5px;
+    padding: 10px 0;
+    transition: opacity 1s ease-in-out;
+
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 110%;
+  }
+
+  .hovertext:hover:before {
+    opacity: 1;
+    visibility: visible;
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .1s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  </style>
+<script>
+    //user-defined function to download CSV file
+    function downloadCSV(csv, filename) {
+        var csvFile;
+        var downloadLink;
+       
+        //define the file type to text/csv
+        csvFile = new Blob([csv], {type: 'text/csv'});
+        downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+    
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+    
+    //user-defined function to export the data to CSV file format
+    function exportFireControlToCSV(filename) {
+       //declare a JavaScript variable of array type
+       var csv = [];
+       var rows = document.querySelectorAll("table tr");
+     
+       //merge the whole data in tabular form 
+       for(var i=0; i<rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        for( var j=0; j<cols.length; j++)
+           row.push(cols[j].innerText);
+        csv.push(row.join(","));
+       } 
+       //call the function to download the CSV file
+       downloadCSV(csv.join("\n"), filename);
+    }
+
+</script>
+
+<script>
+  function totalIt() {
+      var input = document.getElementsByName("product");
+      var total = 0;
+      for (var i = 0; i < input.length; i++) {
+        if (input[i].checked) {
+          total += parseFloat(input[i].value);
+        }
+      }
+      document.getElementsByName("total")[0].value = "Php" + total.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2});
+    }
+  function totalHas() {
+      var inputhas = document.getElementsByName("hectares");
+      var has = 0;
+      for (var i = 0; i < inputhas.length; i++) {
+      if (inputhas[i].checked) {
+          has += parseFloat(inputhas[i].value);
+      }
+      }
+    
+      document.getElementsByName("has")[0].value = has.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2}); + " has.";
+    }
+  function totalRed() {
+      var inputred = document.getElementsByName("reduced");
+      var reduced = 0;
+      for (var i = 0; i < inputred.length; i++) {
+      if (inputred[i].checked) {
+          reduced += parseFloat(inputred[i].value);
+      }
+      }
+      document.getElementsByName("red")[0].value = reduced.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2}); + " has.";
+  
+  
+  }
+
+</script>
+<script>
+
+  function selectAllCheckboxes(){
+    var isChecked = document.getElementById("selectAll");
+    if( isChecked.checked == true ){
+      var allFoodCheckboxes = document.getElementsByName("hectares");
+      for( var i=0; i< allFoodCheckboxes.length; i++){
+        allFoodCheckboxes[i].checked = true;
+      }
+    } else {
+      var allFoodCheckboxes = document.getElementsByName("hectares");
+      for( var i=0; i< allFoodCheckboxes.length; i++){
+        allFoodCheckboxes[i].checked = false;
+      }    
+    }
+    var isChecked = document.getElementById("selectAll");
+    if( isChecked.checked == true ){
+      var allFoodCheckboxes = document.getElementsByName("product");
+      for( var i=0; i< allFoodCheckboxes.length; i++){
+        allFoodCheckboxes[i].checked = true;
+      }
+    } else {
+      var allFoodCheckboxes = document.getElementsByName("product");
+      for( var i=0; i< allFoodCheckboxes.length; i++){
+        allFoodCheckboxes[i].checked = false;
+      }    
+    }
+    var isChecked = document.getElementById("selectAll");
+    if( isChecked.checked == true ){
+      var allFoodCheckboxes = document.getElementsByName("reduced");
+      for( var i=0; i< allFoodCheckboxes.length; i++){
+        allFoodCheckboxes[i].checked = true;
+      }
+    } else {
+      var allFoodCheckboxes = document.getElementsByName("reduced");
+      for( var i=0; i< allFoodCheckboxes.length; i++){
+        allFoodCheckboxes[i].checked = false;
+      }    
+    }
+  };
+
+
+  </script>
+
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+
+            
+            <!-- Card Body -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Land Cover</h6>
+
+                    
+                    <div class="dropdown no-arrow">
+                        
+    
+                      <!----  <a onclick="exportFireControlToCSV('Land Cover Scenario.csv')" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Download Report</a> -->
+                       
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                            aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Options</div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#firecontrolModal">Add
+                                Item</a>
+
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Update Item</a>
+                        </div>
+                       
+                    </div>
+                </div>
+
+
+
+                <div class="card-body">
+                  <div class="table-responsive">
+                        <table class="table table-bordered"  width="100%" cellspacing="0" >
+                            
+                            <thead>
+                                <tr>
+                                   <th><span class="hovertext" data-hover="Land Cover Scenarios to be reforested"><h8>Land Cover Scenario</h8></span>
+                                      <br><input type="checkbox" id="selectAll" name="selectAll" value="selectAll" onclick="selectAllCheckboxes();totalIt();totalHas();totalRed();">
+                                        <label for="selectAll"></label>Select All</th>
+                                        <th><span class="hovertext" data-hover="Amount of hectares of the land cover area">Hectares</span</th>
+                                        <th><span class="hovertext" data-hover="Hectares multiplied by the rainforestation cost per hectare">Cost</span></th></span>
+                                       <th> <span class="hovertext" data-hover="Amount of flood reduced when landcover is reforested">Flood Reduced (depth)</span></th>
+
+                                   
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Total:</th>
+                                    <th> <input value="0 has." readonly="readonly" type="text" name="has" /> ha</th>
+                                  <th><input value="Php 0.00" readonly="readonly" type="text" name="total" />  </th>
+                                  <th>
+                                    <input value="0.00" readonly="readonly" type="text" name="red" />  </th>
+                                  </th>
+                                   
+                                </tr>
+                            </tfoot>
+                            
+                            {% for i in investmentlc %}
+                            <tbody>
+                                <tr>
+                                    <td>
+                                    <span>{{i.investmentlc_name}}
+                                      
+                                    </span></td>
+                                    <td><input name="hectares" value="{{i.investmentlc_hectares}}" type="checkbox" onclick="totalHas();"><span>{{i.investmentlc_hectares}} ha</span></td>
+                                    
+                                    <td><input name="product" value="{{i.investmentlc_hectares * (rainforestation|sum(attribute='rf_total'))}}" type="checkbox" onclick="totalIt();">{{"Php {:,.2f}".format((rainforestation|sum(attribute='rf_total')) * i.investmentlc_hectares)}}</span></td>
+                                   <td>
+                                   <input name="reduced" value="{{i.investmentlc_reduced}}" type="checkbox" onclick="totalRed();"> {{i.investmentlc_reduced}} meters
+                                   
+                                </tr>
+                              
+                            </tbody>                          
+                        {% endfor %}  
+                        </table>
+                    </div>
+                </div>
+
+{% include 'modals.html' %}
